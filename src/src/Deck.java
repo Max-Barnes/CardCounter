@@ -21,7 +21,7 @@ public class Deck extends Card{
         for (int nOfSuit = 0; nOfSuit < 3; nOfSuit++) {
 
             for (int nOfRank = 1; nOfRank < 13; nOfRank++) {
-                deckOfCards.add(new Card(nOfSuit, nOfRank));
+                deckOfCards.add(new Card(nOfRank, nOfSuit));
             }
         }
         Collections.shuffle(deckOfCards);

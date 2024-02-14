@@ -7,7 +7,7 @@ public class Card {
 
     private int suit; // 0 is spades, 1 is hearts, 2 is clubs, 3 is diamonds
 
-    boolean isFaceUp = false;
+    boolean isFaceUp = true;
 
     public Card() {
 
@@ -51,21 +51,24 @@ public class Card {
         return isFaceUp;
     }
 
-    public void setFaceUp(boolean faceUp) {
+    public void setFaceUp(Card card) {
         isFaceUp = true;
     }
 
-    public void setFaceDown(boolean faceDown) {
+    public void setFaceDown(Card card) {
         isFaceUp = false;
     }
 
 
-   public void drawCard(List<Card> destination, List<Deck> deck) {
-        destination.add(deck.remove(0));
+   public void drawCard(Hand destination, List<Deck> deck) {
+        destination.addToHand(deck.remove(0));
    }
     @Override
     public String toString() {
-        return (this.getSuitString() + this.getRankString());
+        if (!isFaceUp) {
+            return "Hidden Card";
+        }
+        return (this.getRankString() + " of " + this.getSuitString() );
     }
 
 

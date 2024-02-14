@@ -2,46 +2,104 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-public class Blackjack extends Card implements cardGame{
 
+/*
+ * TODO: chip accounting system
+ * TODO: more players
+ * TODO: shuffle on command
+ * TODO: more decks
+ * TODO: ask madden
+ *  TODO: clear hand after each round
+  */
+public class Blackjack extends Card {
 
-    Scanner userInput = new Scanner();
+    UserInputs userInput = new UserInputs();
+
     public static void main(String[] args) {
+        Blackjack blackjack = new Blackjack();
 
-        startGame();
+        blackjack.startGame();
 
     }
 
-    @Override
     public void startGame() { // start with 2 player
-        // make deck
 
-        List playerHand = new ArrayList<>(2);
-        List dealerHand = new ArrayList<>(2);
+        Hand playerHand = new Hand();
+        Hand dealerHand = new Hand();
 
         Deck newDeck = new Deck();
 
         List Deck = newDeck.makeDeck();
 
-        drawCard(playerHand, Deck);
-        drawCard(playerHand, Deck);
+        UserInterface player = new UserInterface();
 
-        drawCard(dealerHand, Deck);
-        drawCard(dealerHand, Deck);
+        System.out.println("What is your name?");
+        player.setName(userInput.newPlayer());
 
-        // deal cards form top
 
-        System.out.println("Dealer has: " + dealerHand + "You have: " + playerHand);
+        boolean gameRunning = true;
 
-        System.out.println("[1]: Hit");
-        System.out.println("[2]: Stand");
-        System.out.println("[3]: Help");
-        System.out.println("[4]: Quit");
+        // how much would you like to bet? (max 100)
+        System.out.println("Welcome " + player.getName() + "!");
+        while (gameRunning) {
+            System.out.println("You have " + player.getBank() + " chips.");
+            System.out.println("How much would you like to bet?");
+            int bet = userInput.startBet();
 
-        System.out.print("What will you do: ");
-        userInput.nextLine();
+            boolean inHand = true;
+            while (inHand) {
+                // remove cards from both hands and place at the bottom of the deck
 
-        
+                if (playerHand.getHand().size() != 0) {
+                    for (Card each : playerHand.getHand()) {
+                        Deck.add(Deck.size() ,playerHand.getHand().removeAll(playerHand.getHand()));
+                    }
+                    for (Card each : dealerHand.getHand()) {
+                        Deck.add(Deck.size() ,dealerHand.getHand().removeAll(dealerHand.getHand()));
+                    }
 
+                }
+
+                drawCard(playerHand, Deck);
+                drawCard(playerHand, Deck);
+
+                drawCard(dealerHand, Deck);
+                drawCard(dealerHand, Deck);
+
+
+                System.out.println("Dealer has: A hidden card and a " + dealerHand.getHand().get(1) + " You have: " + playerHand.getHand());
+                System.out.println();
+                System.out.println("Dealer showing: " + dealerHand.getHand().get(1));
+                System.out.println();
+                System.out.println("Your hand is worth: " + playerHand.getHandValue(playerHand.getHand()));
+                System.out.println();
+
+                if (dealerHand.isBlackjack(dealerHand)) {
+                    System.out.println("Dealer Blackjack!");
+                    System.out.println("You lose!");
+                    System.out.println();
+                    break;
+                }
+
+                if (playerHand.isBlackjack(playerHand)) {
+                    System.out.println("Blackjack!");
+                    System.out.println("You win!");
+                    break;
+                }
+
+                // TODO: check for blackjack
+
+
+                System.out.println("Options: ");
+                System.out.println("[1]: Hit");
+                System.out.println("[2]: Stand");
+                System.out.println("[3]: Ask Madden");
+                System.out.println("[4]: Quit");
+
+                System.out.print("What will you do: ");
+
+                // TODO: mega switchcase for this part ^
+            }
+        }
     }
 }
