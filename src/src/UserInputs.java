@@ -31,4 +31,8 @@ public class UserInputs {
 
         return userInput.nextLine();
     }
+
+    public String choice() {
+        return userInput.nextLine();
+    }
 }

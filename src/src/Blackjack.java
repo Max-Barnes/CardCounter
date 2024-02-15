@@ -5,11 +5,7 @@ import java.util.Scanner;
 
 /*
  * TODO: chip accounting system
- * TODO: more players
- * TODO: shuffle on command
- * TODO: more decks
  * TODO: ask madden
- *  TODO: clear hand after each round
   */
 public class Blackjack extends Card {
 
@@ -78,28 +74,107 @@ public class Blackjack extends Card {
                     System.out.println("Dealer Blackjack!");
                     System.out.println("You lose!");
                     System.out.println();
+
+                    player.handPayoutLose(bet);
                     break;
                 }
 
                 if (playerHand.isBlackjack(playerHand)) {
                     System.out.println("Blackjack!");
                     System.out.println("You win!");
+
+                    player.blackjackPayout(bet);
                     break;
                 }
+                boolean choosing = true;
+                while (choosing) {
+                    System.out.println("Options: ");
+                    System.out.println("[1]: Hit");
+                    System.out.println("[2]: Stand");
+                    System.out.println("[3]: Ask Madden");
+                    System.out.println("[4]: Quit");
 
-                // TODO: check for blackjack
+                    System.out.print("What will you do: ");
 
+                    String choice = userInput.choice();
 
-                System.out.println("Options: ");
-                System.out.println("[1]: Hit");
-                System.out.println("[2]: Stand");
-                System.out.println("[3]: Ask Madden");
-                System.out.println("[4]: Quit");
+                        switch (choice) {
 
-                System.out.print("What will you do: ");
+                            case "1":
+                                playerHand.drawCard(playerHand, Deck);
+                                System.out.println("Your hand is worth: " + playerHand.getHandValue(playerHand.getHand()));
+                                if (playerHand.getHandValue(playerHand.getHand()) > 21) {
+                                    System.out.println("Bust!");
+                                    System.out.println("You lost " + bet + " chips");
+                                    player.handPayoutLose(bet);
+                                    inHand = false;
+                                    choosing = false;
 
-                // TODO: mega switchcase for this part ^
+                                    break;
+
+                                }
+                                break;
+                            case "2":
+                                while (isDealerHandContinuing(dealerHand)) {
+                                    System.out.println("Dealer drawing...");
+                                    drawCard(dealerHand, Deck);
+                                    System.out.println("Dealer has: " + dealerHand.getHandValue(dealerHand.getHand()));
+                                    if (dealerHand.getHandValue(dealerHand.getHand()) > 21) {
+                                        System.out.println("Dealer bust!");
+                                        System.out.println("You won " + (bet * 1.5) +" chips");
+                                        player.handPayoutWin(bet);
+                                        inHand = false;
+                                        choosing = false;
+
+                                        break;
+                                    }
+                                }
+                                if (dealerHand.getHandValue(dealerHand.getHand()) >= playerHand.getHandValue(playerHand.getHand()) && dealerHand.getHandValue(dealerHand.getHand()) <= 21) {
+                                    System.out.println("Dealer has" + dealerHand.getHandValue(dealerHand.getHand()));
+                                    System.out.println("Dealer wins!");
+                                    System.out.println("You lost " + bet + " chips");
+                                    player.handPayoutLose(bet);
+                                    inHand = false;
+                                    choosing = false;
+
+                                } else {
+                                    System.out.println("You win!");
+                                    System.out.println("You won " + (bet * 1.5) +" chips");
+                                    player.handPayoutWin(bet);
+                                    inHand = false;
+                                    choosing = false;
+
+                                }
+
+                                break;
+                            case "3": // TODO: ask madden
+                                break;
+                            case "4":
+                                player.handPayoutLose(bet);
+                                inHand = false;
+                                choosing = false;
+                                gameRunning = false;
+                                break;
+                        }
+                }
             }
         }
+    }
+
+    public boolean isHandContinuing(Hand hand) {
+        int handVal = hand.getHandValue(hand.getHand());
+
+        if (handVal >= 21) {
+            return false;
+        } else return true;
+
+    }
+
+    public boolean isDealerHandContinuing(Hand hand) {
+        int handval = hand.getHandValue(hand.getHand());
+
+        if (handval >= 17) {
+            return false;
+        } else return true;
     }
 }

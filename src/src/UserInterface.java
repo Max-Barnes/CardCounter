@@ -21,4 +21,18 @@ public class UserInterface {
     public void setName(String name) {
         this.name = name;
     }
+
+    public void handPayoutWin(int bet) {
+        this.bank *= 1.5;
+    }
+
+    public void handPayoutLose(int bet) {
+        this.bank -= bet;
+    }
+
+    public void blackjackPayout(int bet) {
+        this.bank += 3 * (bet) + bet;
+    }
+
+
 }
