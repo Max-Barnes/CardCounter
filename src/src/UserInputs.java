@@ -9,18 +9,20 @@ public class UserInputs {
         boolean betValid = false;
         while (!betValid) {
             String bet = userInput.nextLine().trim();
+            if (bet.equalsIgnoreCase("Q")) {
+                break;
+            }
             try {
                 betAmt = Integer.parseInt(bet);
                 betValid = true;
             } catch (NumberFormatException e) {
                 System.out.println("Please only enter numbers");
             }
-            if (betAmt > 100 || betAmt < 1) {
-                System.out.println("bet must be between 1 and 100");
+            if (betAmt > 1000 || betAmt < 1) {
+                System.out.println("bet must be between 1 and 1000");
                 betValid = false;
             }
         }
-
 
 
         return betAmt;

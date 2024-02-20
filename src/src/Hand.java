@@ -20,11 +20,23 @@ public class Hand extends Card{
         int handVal = 0;
         int cardVal = 0;
         for (Card each : hand) {
+
             cardVal = each.getRank();
             if (cardVal == 1) {
-                // TODO: ace rules
-                cardVal = 11;
+
+                if (hand.indexOf(each) == hand.size()) {
+
+                    if (handVal + 11 <= 21) { // TODO: only works with drawn aces not existing aces
+                        cardVal = 11;
+                    }
+                } else {
+
+
+                }
+
+
                 handVal += cardVal;
+
             } else if (cardVal >= 11) {
                 // card is face card and worth 10
                 cardVal = 10;

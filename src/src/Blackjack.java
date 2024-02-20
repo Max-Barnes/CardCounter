@@ -6,6 +6,7 @@ import java.util.Scanner;
 /*
  * TODO: chip accounting system
  * TODO: ask madden
+ *  TODO: fix aces
   */
 public class Blackjack extends Card {
 
@@ -35,12 +36,24 @@ public class Blackjack extends Card {
 
         boolean gameRunning = true;
 
-        // how much would you like to bet? (max 100)
         System.out.println("Welcome " + player.getName() + "!");
         while (gameRunning) {
             System.out.println("You have " + player.getBank() + " chips.");
-            System.out.println("How much would you like to bet?");
+            System.out.println();
+            if (player.getBank() <= 0) {
+                System.out.println("Sorry you have run out of chips");
+                System.out.println("Goodbye, "+ player.getName()+ " you left with: " + player.getBank() + " chips.");
+                gameRunning = false;
+                break;
+            }
+            System.out.println("How much would you like to bet? (Q to quit)");
             int bet = userInput.startBet();
+            if (bet == 0) {
+                System.out.println("Goodbye, "+ player.getName()+ " you left with: " + player.getBank() + " chips.");
+                player.handPayoutLose(bet);
+                gameRunning = false;
+                break;
+            }
 
             boolean inHand = true;
             while (inHand) {
@@ -67,8 +80,10 @@ public class Blackjack extends Card {
                 System.out.println();
                 System.out.println("Dealer showing: " + dealerHand.getHand().get(1));
                 System.out.println();
-                System.out.println("Your hand is worth: " + playerHand.getHandValue(playerHand.getHand()));
+                System.out.println("Your hand is worth: " + handValueOf(playerHand));
                 System.out.println();
+
+
 
                 if (dealerHand.isBlackjack(dealerHand)) {
                     System.out.println("Dealer Blackjack!");
@@ -87,23 +102,31 @@ public class Blackjack extends Card {
                     break;
                 }
                 boolean choosing = true;
+                int timesHit = 0;
                 while (choosing) {
                     System.out.println("Options: ");
                     System.out.println("[1]: Hit");
                     System.out.println("[2]: Stand");
                     System.out.println("[3]: Ask Madden");
                     System.out.println("[4]: Quit");
+                    System.out.println();
 
                     System.out.print("What will you do: ");
+                    System.out.println();
 
                     String choice = userInput.choice();
 
                         switch (choice) {
 
                             case "1":
+                                timesHit++;
                                 playerHand.drawCard(playerHand, Deck);
-                                System.out.println("Your hand is worth: " + playerHand.getHandValue(playerHand.getHand()));
+                                System.out.println();
+                                System.out.println("The card drawn is: " + playerHand.getHand().get(1 + timesHit));
+                                System.out.println();
+                                System.out.println("Your hand is worth: " + handValueOf(playerHand));
                                 if (playerHand.getHandValue(playerHand.getHand()) > 21) {
+
                                     System.out.println("Bust!");
                                     System.out.println("You lost " + bet + " chips");
                                     player.handPayoutLose(bet);
@@ -119,20 +142,23 @@ public class Blackjack extends Card {
                                     System.out.println("Dealer drawing...");
                                     drawCard(dealerHand, Deck);
                                     System.out.println("Dealer has: " + dealerHand.getHandValue(dealerHand.getHand()));
-                                    if (dealerHand.getHandValue(dealerHand.getHand()) > 21) {
-                                        System.out.println("Dealer bust!");
-                                        System.out.println("You won " + (bet * 1.5) +" chips");
-                                        player.handPayoutWin(bet);
-                                        inHand = false;
-                                        choosing = false;
-
-                                        break;
-                                    }
+                                    System.out.println();
                                 }
-                                if (dealerHand.getHandValue(dealerHand.getHand()) >= playerHand.getHandValue(playerHand.getHand()) && dealerHand.getHandValue(dealerHand.getHand()) <= 21) {
-                                    System.out.println("Dealer has" + dealerHand.getHandValue(dealerHand.getHand()));
+                                if (dealerHand.getHandValue(dealerHand.getHand()) > 21) {
+                                    System.out.println("Dealer bust!");
+                                    System.out.println("You won " + (bet * 1.5) +" chips");
+                                    System.out.println();
+                                    player.handPayoutWin(bet);
+                                    inHand = false;
+                                    choosing = false;
+
+                                }
+                                else if (handValueOf(dealerHand) >= handValueOf(playerHand) && handValueOf(dealerHand) <= 21) {
+
+                                    System.out.println("Dealer has" + handValueOf(dealerHand));
                                     System.out.println("Dealer wins!");
                                     System.out.println("You lost " + bet + " chips");
+                                    System.out.println();
                                     player.handPayoutLose(bet);
                                     inHand = false;
                                     choosing = false;
@@ -177,4 +203,10 @@ public class Blackjack extends Card {
             return false;
         } else return true;
     }
+
+
+    public int handValueOf(Hand playerHand) {
+        return playerHand.getHandValue(playerHand.getHand());
+    }
+
 }

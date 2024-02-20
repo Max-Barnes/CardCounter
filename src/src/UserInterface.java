@@ -23,7 +23,7 @@ public class UserInterface {
     }
 
     public void handPayoutWin(int bet) {
-        this.bank *= 1.5;
+        this.bank += (int)bet * 1.5;
     }
 
     public void handPayoutLose(int bet) {
