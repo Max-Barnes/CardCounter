@@ -19,20 +19,13 @@ public class Hand extends Card{
     public int getHandValue(List<Card> hand) {
         int handVal = 0;
         int cardVal = 0;
+        int acesInHand = 0;
         for (Card each : hand) {
 
             cardVal = each.getRank();
             if (cardVal == 1) {
-
-                if (hand.indexOf(each) == hand.size()) {
-
-                    if (handVal + 11 <= 21) { // TODO: only works with drawn aces not existing aces
-                        cardVal = 11;
-                    }
-                } else {
-
-
-                }
+                acesInHand++;
+                cardVal = 11;
 
 
                 handVal += cardVal;
@@ -46,6 +39,11 @@ public class Hand extends Card{
             }
 
         }
+        while (handVal > 21 && acesInHand > 0) {
+            handVal -= 10;
+            acesInHand--;
+        }
+
         return handVal;
     }
     public boolean isBlackjack(Hand checkHand) {
