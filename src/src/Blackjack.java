@@ -4,9 +4,7 @@ import java.util.Scanner;
 
 
 /*
- * TODO: chip accounting system
  * TODO: ask madden
- *  TODO: fix aces
   */
 public class Blackjack extends Card {
 
