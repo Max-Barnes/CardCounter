@@ -43,6 +43,8 @@ public class Blackjack extends Card {
 
         boolean gameRunning = true;
 
+        int count = 0;
+
         System.out.println("Welcome " + player.getName() + "!");
         while (gameRunning) {
             System.out.println("You have " + player.getBank() + " chips.");
@@ -81,6 +83,15 @@ public class Blackjack extends Card {
 
                 drawCard(dealerHand, Deck);
                 drawCard(dealerHand, Deck);
+
+                // maintain count could do for each player in game in the future
+
+                for (Card each : playerHand.getHand()) {
+                    count += each.getCountVal();
+                }
+                for (Card each : dealerHand.getHand()) {
+                    count += each.getCountVal();
+                }
 
 
                 System.out.println("Dealer has: A hidden card and a " + dealerHand.getHand().get(1) + " You have: " + playerHand.getHand());
@@ -127,7 +138,10 @@ public class Blackjack extends Card {
 
                             case "1":
                                 timesHit++;
-                                playerHand.drawCard(playerHand, Deck);
+                                Card drawnCard = playerHand.drawCard(playerHand, Deck);
+
+                                count += drawnCard.getCountVal();
+
                                 System.out.println();
                                 System.out.println("The card drawn is: " + playerHand.getHand().get(1 + timesHit));
                                 System.out.println();
@@ -147,7 +161,10 @@ public class Blackjack extends Card {
                             case "2":
                                 while (isDealerHandContinuing(dealerHand)) {
                                     System.out.println("Dealer drawing...");
-                                    drawCard(dealerHand, Deck);
+                                    drawnCard = drawCard(dealerHand, Deck);
+
+                                    count += drawnCard.getCountVal();
+
                                     System.out.println("Dealer has: " + dealerHand.getHandValue(dealerHand.getHand()));
                                     System.out.println();
                                 }
@@ -181,6 +198,20 @@ public class Blackjack extends Card {
 
                                 break;
                             case "3": // TODO: ask madden
+                                if (count == 0) {
+                                    System.out.println("The count is 0");
+                                    System.out.println("You should bet conservatively until count is high");
+                                    System.out.println("Assume the dealer has a high card (value 10) as their hidden card");
+                                } else if (count > 0) {
+                                    System.out.println("The count is +" + Math.abs(count));
+                                    System.out.println("You should bet high and expect high value cards!");
+                                    System.out.println("Assume the dealer could also have a high card");
+                                } else {
+                                    System.out.println("The count is -" + Math.abs(count));
+                                    System.out.println("You should bet low until count is high again");
+                                    System.out.println("The dealer may not have an ace or 10 as their hidden card since the count is low");
+                                }
+
                                 break;
                             case "4":
                                 player.handPayoutLose(bet);

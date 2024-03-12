@@ -7,6 +7,7 @@ public class Card {
 
     private int suit; // 0 is spades, 1 is hearts, 2 is clubs, 3 is diamonds
 
+
     boolean isFaceUp = true;
 
     public Card() {
@@ -59,9 +60,17 @@ public class Card {
         isFaceUp = false;
     }
 
+    /**
+     * returns int of count after cards have been drawn
+     * @param destination
+     * @param deck
+     * @return
+     */
 
-   public void drawCard(Hand destination, List<Deck> deck) {
-        destination.addToHand(deck.remove(0));
+   public Card drawCard(Hand destination, List<Deck> deck) {
+       Card cardDrawn = deck.remove(0);
+       destination.addToHand(cardDrawn);
+       return cardDrawn;
    }
     @Override
     public String toString() {
@@ -71,7 +80,13 @@ public class Card {
         return (this.getRankString() + " of " + this.getSuitString() );
     }
 
-
-
-
+    public int getCountVal() {
+        if (this.getRank() == 1 || this.getRank() >= 10) {
+            return 1;
+        } else if (this.getRank() < 10 || this.getRank() > 6) {
+            return 0;
+        } else {
+            return -1;
+        }
+    }
 }
